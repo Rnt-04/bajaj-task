@@ -1,22 +1,23 @@
 package com.rnt.bajaj.bajaj_task;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.rnt.bajaj.bajaj_task.SolutionRequest;
 import com.rnt.bajaj.bajaj_task.UserDetails;
 import com.rnt.bajaj.bajaj_task.WebhookResponse;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
+
 @SpringBootApplication
 public class App implements CommandLineRunner {
 
     private static final String NAME = "Ritindranath Tagore";
-    private static final String REG_NO = "22BCG10049";
+    private static final String REG_NO = "22BCG10049"; // Use your registration number
     private static final String EMAIL = "ritindranathtagore2022@vitbhopal.ac.in";
 
     private static final String GENERATE_WEBHOOK_URL = "https://bfhldevapigw.healthrx.co.in/hiring/generateWebhook/JAVA";
@@ -27,28 +28,32 @@ public class App implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+        System.out.println("--- Starting Hiring Task ---");
         RestTemplate restTemplate = new RestTemplate();
 
+        // Step 1 & 2: Generate Webhook and Get Access Token
+        System.out.println("Step 1: Generating webhook...");
         UserDetails userDetails = new UserDetails(NAME, REG_NO, EMAIL);
         WebhookResponse webhookResponse = restTemplate.postForObject(GENERATE_WEBHOOK_URL, userDetails, WebhookResponse.class);
 
-        if (webhookResponse == null || webhookResponse.getWebhookResponse() == null || webhookResponse.getAccessToken() == null) {
+        if (webhookResponse == null || webhookResponse.getWebhook() == null || webhookResponse.getAccessToken() == null) {
             System.err.println("Failed to generate webhook. Response was null.");
             return;
         }
 
-        String webhookUrl = webhookResponse.getWebhookResponse();
+        String webhookUrl = webhookResponse.getWebhook();
         String accessToken = webhookResponse.getAccessToken();
         System.out.println("Webhook URL received: " + webhookUrl);
         System.out.println("Access Token received.");
 
-        String finalQuery;
 
+        System.out.println("Step 2: Solving SQL problem...");
+        String finalQuery;
         finalQuery = "SELECT p.AMOUNT AS SALARY, CONCAT(e.FIRST_NAME, ' ', e.LAST_NAME) AS NAME, TIMESTAMPDIFF(YEAR, e.DOB, CURDATE()) AS AGE, d.DEPARTMENT_NAME FROM PAYMENTS p JOIN EMPLOYEE e ON p.EMP_ID = e.EMP_ID JOIN DEPARTMENT d ON e.DEPARTMENT = d.DEPARTMENT_ID WHERE DAY(p.PAYMENT_TIME) <> 1 ORDER BY p.AMOUNT DESC LIMIT 1;";
 
         System.out.println("Final SQL Query: " + finalQuery);
 
+        System.out.println("Step 3: Submitting the solution...");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", accessToken);
@@ -62,6 +67,7 @@ public class App implements CommandLineRunner {
         } catch (Exception e) {
             System.err.println("Failed to submit solution: " + e.getMessage());
         }
+
+        System.out.println("Hiring Task Finished");
     }
 }
-

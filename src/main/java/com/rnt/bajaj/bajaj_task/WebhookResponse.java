@@ -1,19 +1,20 @@
 package com.rnt.bajaj.bajaj_task;
 
+import lombok.Data;
+
+@Data
+
 public class WebhookResponse {
-    private String webhookResponse;
+    private String webhook;
     private String accessToken;
 
-    public WebhookResponse(String webhookResponse, String accessToken) {
-        this.webhookResponse = webhookResponse;
-        this.accessToken = accessToken;
+    public WebhookResponse() {
     }
-
-    public String getWebhookResponse() {
-        return webhookResponse;
+    public String getWebhook() {
+        return webhook;
     }
-    public void setWebhookResponse(String webhookResponse) {
-        this.webhookResponse = webhookResponse;
+    public void setWebhook(String webhook) {
+        this.webhook = webhook;
     }
     public String getAccessToken() {
         return accessToken;

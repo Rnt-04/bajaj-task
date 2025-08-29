@@ -1,16 +1,13 @@
 package com.rnt.bajaj.bajaj_task;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class SolutionRequest {
-    private static String finalQuery;
-
-    SolutionRequest(String finalQuery) {
-        this.finalQuery = finalQuery;
-    }
-
-    public void setFinalQuery(String finalQuery) {
-        this.finalQuery = finalQuery;
-    }
-    public String getFinalQuery() {
-        return finalQuery;
-    }
+    private String finalQuery;
 }
