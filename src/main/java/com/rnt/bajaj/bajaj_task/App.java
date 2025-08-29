@@ -28,11 +28,8 @@ public class App implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("--- Starting Hiring Task ---");
         RestTemplate restTemplate = new RestTemplate();
 
-        // Step 1 & 2: Generate Webhook and Get Access Token
-        System.out.println("Step 1: Generating webhook...");
         UserDetails userDetails = new UserDetails(NAME, REG_NO, EMAIL);
         WebhookResponse webhookResponse = restTemplate.postForObject(GENERATE_WEBHOOK_URL, userDetails, WebhookResponse.class);
 
@@ -46,14 +43,11 @@ public class App implements CommandLineRunner {
         System.out.println("Webhook URL received: " + webhookUrl);
         System.out.println("Access Token received.");
 
-
-        System.out.println("Step 2: Solving SQL problem...");
         String finalQuery;
         finalQuery = "SELECT p.AMOUNT AS SALARY, CONCAT(e.FIRST_NAME, ' ', e.LAST_NAME) AS NAME, TIMESTAMPDIFF(YEAR, e.DOB, CURDATE()) AS AGE, d.DEPARTMENT_NAME FROM PAYMENTS p JOIN EMPLOYEE e ON p.EMP_ID = e.EMP_ID JOIN DEPARTMENT d ON e.DEPARTMENT = d.DEPARTMENT_ID WHERE DAY(p.PAYMENT_TIME) <> 1 ORDER BY p.AMOUNT DESC LIMIT 1;";
 
         System.out.println("Final SQL Query: " + finalQuery);
 
-        System.out.println("Step 3: Submitting the solution...");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", accessToken);
